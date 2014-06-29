@@ -1,0 +1,66 @@
+body {
+	background-image: url('../backgrounds/bg11.jpeg');
+}
+
+#outerDiv {
+	width: 1210px;
+	margin: 0 auto;
+	text-align: center;
+	font-family: Geogia;
+}
+
+#player {
+	width: 200px;
+	hight: 500px;
+	margin-right: 28px;
+	margin-left: 14px;
+	float: left;
+	padding: 5px;
+	-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.4);
+}
+
+#questionBody {
+	margin-top: 210px;
+}
+
+#questionBody button {
+	float: left;
+	margin-left: 10px;
+}
+
+#questionBody p {
+	margin-top: 20px;
+}
+
+.btn-success {
+	margin-top: 10px;
+}
+
+.btn-warning {
+	margin-top: -10px;
+}
+
+.btn-danger {
+	margin-top: -30px;
+}
+
+
+
+form {
+	width: 365px;
+	margin: 0 auto;
+	margin-top: 30px;
+}
+
+.current {
+	background-image: url('../backgrounds/bg18.jpeg');
+}
+
+.defaultColor {
+	background-image: url('../backgrounds/bg15.jpeg');
+}
+
+.passColor {
+	background-image: url('../backgrounds/bg19.jpeg');
+}
