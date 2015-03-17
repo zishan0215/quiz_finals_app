@@ -8,7 +8,7 @@
 		$pass_player = -1;
 		if(isset($_COOKIE['ques_no']) && isset($_COOKIE['ques_org'])) {
 			setcookie('ques_org',$ques_no,time() - (86400 * 7));
-			setcookie('ques_no',$ques_no,time() - (86400 * 7));	
+			setcookie('ques_no',$ques_no,time() - (86400 * 7));
 		}
 		setcookie('ques_no',$question,time() + (86400 * 7)); // 86400 = 1 day
 		setcookie('ques_org',$ques_no,time() + (86400 * 7));
@@ -29,7 +29,7 @@
 				$add = 10;
 			} else {
 				$add = 15;
-			} 
+			}
 			$pass_player = -1;
 			$amount += $add;
 			update_score($_POST['sel_player']+1,$amount);
@@ -57,7 +57,7 @@
 		//setcookie('ques_org',$ques_no,time() - (86400 * 7));
 		setcookie('ques_org',$ques_no,time() + (86400 * 7)); // 86400 = 1 day
 		setcookie('ques_no',$ques_no,time() + (86400 * 7));
-		
+
 	} elseif (isset($_POST['pass'])) {
 		$ques_no = $_COOKIE['ques_org'];
 		$selected_player = $ques_no%5;
@@ -87,7 +87,7 @@
 				<hr />
 			</header>
 			<section id="mainContent">
-				<?php 
+				<?php
 
 					for($i=0;$i<5;$i++) {
 						$player = mysqli_fetch_array($result_players);
@@ -99,10 +99,10 @@
 								echo "class=\"passColor\"";
 							} else {
 								echo "class=\"defaultColor\"";
-							} 
+							}
 						echo " >
 								<h3>{$player['name']}</h3>
-								
+
 								<hr />
 								<h4>Score: {$player['score']}</h4>
 							</div>
