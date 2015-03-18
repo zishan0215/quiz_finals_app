@@ -11,6 +11,7 @@
 ?>
 
 <?php
+  // Update question
   if(isset($_GET['uq']) && $_GET['uq'] == 1) {
     $id = $_POST['id'];
     $content = addslashes(trim($_POST['content']));
@@ -18,7 +19,22 @@
     $query .= "WHERE id = {$id}";
     mysqli_query($connection, $query);
     if(mysqli_affected_rows($connection)) {
-      $success = "Question Updates Successfully";
+      $success = "Question Updated Successfully";
+    }
+  }
+?>
+
+<?php
+  // Update player
+  if(isset($_GET['up']) && $_GET['up'] == 1) {
+    $id = $_POST['id'];
+    $name = trim($_POST['name']);
+    $score = $_POST['score'];
+    $query = "UPDATE players SET name = '{$name}', score = {$score} ";
+    $query .= "WHERE id = {$id}";
+    mysqli_query($connection, $query);
+    if(mysqli_affected_rows($connection)) {
+      $success = "Player Updated Successfully";
     }
   }
 ?>
@@ -66,7 +82,7 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li <?php if((isset($_GET['ques']) && $_GET['ques'] == 1) || !isset($_GET['player']) && !$up) {echo 'class="active"'; $ques=1;}?> ><a href="<?php echo $_SERVER['PHP_SELF'] . '?ques=1' ?>">Quetions <span class="sr-only">(current)</span></a></li>
+            <li <?php if((isset($_GET['ques']) && $_GET['ques'] == 1) || !isset($_GET['player']) && !$up) {echo 'class="active"'; $ques=1;}?> ><a href="<?php echo $_SERVER['PHP_SELF'] . '?ques=1' ?>">Questions <span class="sr-only">(current)</span></a></li>
           </ul>
           <ul class="nav nav-sidebar">
             <li <?php if((isset($_GET['player']) && $_GET['player'] == 1) || $up) echo 'class="active"';?>><a href="<?php echo $_SERVER['PHP_SELF'] . '?player=1' ?>">Players</a></li>
@@ -163,16 +179,30 @@
                 $id = $_POST['id'];
                 $query = "SELECT * FROM players WHERE id = {$id}";
                 $result = mysqli_query($connection, $query);
-                $question = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                $player = mysqli_fetch_array($result, MYSQLI_ASSOC);
                 mysqli_free_result($result);
               ?>
-                <form method="post" action="<?php echo $_SERVER['PHP_SELF'] . '?up=1' ?>">
-                  <textarea rows="4" cols="100" name="content"><?php echo $question['content']; ?></textarea>
-                  <input type="hidden" name="id" value="<?php echo $id ?>">
-                  <br><br>
-                  <button style="float:left;margin-right:15px;" type="submit" name="up" class="btn btn-success">Update</button>
+              <form class="form-horizontal" method="post" action="<?php echo $_SERVER['PHP_SELF'] . '?up=1&&player=1' ?>">
+                <div class="form-group">
+                  <label for="name" class="col-sm-2 control-label">Name</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="name" value="<?php echo $player['name'] ?>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="score" class="col-sm-2 control-label">Score</label>
+                  <div class="col-sm-10">
+                    <input type="score" class="form-control" name="score" value="<?php echo $player['score'] ?>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <button style="float:left;margin-right:15px;" type="submit" class="btn btn-success">Update</button>
+                  </div>
+                </div>
+                <input type="hidden" name="id" value="<?php echo $id ?>">
                 </form>
-                <a href="<?php echo $_SERVER['PHP_SELF'] . '?player=1' ?>"><button class="btn btn-danger">Cancel</button></a>
+                <a style="margin-left: 180px;" href="<?php echo $_SERVER['PHP_SELF'] . '?player=1' ?>"><button class="btn btn-danger">Cancel</button></a>
             <?php } ?>
           </div>
         </div>
