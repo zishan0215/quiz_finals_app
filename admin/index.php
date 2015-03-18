@@ -2,8 +2,11 @@
 <?php
   $ques=0;
   $uq = 0;
+  $up = 0;
   if(isset($_GET['update_question'])) {
     $uq = 1;
+  } elseif(isset($_GET['update_player'])) {
+    $up = 1;
   }
 ?>
 
@@ -63,10 +66,10 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li <?php if((isset($_GET['ques']) && $_GET['ques'] == 1) || !isset($_GET['player'])) {echo 'class="active"'; $ques=1;}?> ><a href="<?php echo $_SERVER['PHP_SELF'] . '?ques=1' ?>">Quetions <span class="sr-only">(current)</span></a></li>
+            <li <?php if((isset($_GET['ques']) && $_GET['ques'] == 1) || !isset($_GET['player']) && !$up) {echo 'class="active"'; $ques=1;}?> ><a href="<?php echo $_SERVER['PHP_SELF'] . '?ques=1' ?>">Quetions <span class="sr-only">(current)</span></a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li <?php if((isset($_GET['player']) && $_GET['player'] == 1)) echo 'class="active"';?>><a href="<?php echo $_SERVER['PHP_SELF'] . '?player=1' ?>">Players</a></li>
+            <li <?php if((isset($_GET['player']) && $_GET['player'] == 1) || $up) echo 'class="active"';?>><a href="<?php echo $_SERVER['PHP_SELF'] . '?player=1' ?>">Players</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -76,8 +79,9 @@
           ?>
           <h2 class="sub-header">
             <?php if($ques && !$uq) echo "Questions";
-                  elseif(!$ques) echo "Players";
+                  elseif(!$ques && !$up) echo "Players";
                   elseif($uq) echo 'Update Question';
+                  elseif($up) echo "Update Player";
             ?>
           </h2>
           <div class="table-responsive">
@@ -92,6 +96,7 @@
                   <tr>
                     <th>#</th>
                     <th>Content</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -107,18 +112,33 @@
                       </tr>
                   <?php } mysqli_free_result($result); ?>
                 </tbody>
-              <?php } elseif(!$ques && !$uq) { ?>
+              <?php } elseif(!$ques && !$uq && !$up) { ?>
+                <?php
+                  $query = "SELECT * FROM players";
+                  $result = mysqli_query($connection, $query);
+                  $num = mysqli_num_rows($result);
+                ?>
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Score</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Zishan</td>
-                  </tr>
+                  <?php for($i=1;$i<=$num;$i++) { ?>
+                    <tr>
+                      <form method="post" action="<?php echo $_SERVER['PHP_SELF'] . '?update_player=1' ?>">
+                        <?php $p = mysqli_fetch_array($result, MYSQLI_ASSOC); ?>
+                        <td><?php echo $p['id'] ?></td>
+                        <td><?php echo $p['name'] ?></td>
+                        <td><?php echo $p['score'] ?></td>
+                        <input type="hidden" name="id" value="<?php echo $p['id'] ?>">
+                        <td><button class="btn btn-success" type="submit">EDIT</button></td>
+                      </form>
+                    </tr>
+                  <?php } ?>
                 </tbody>
               <?php } ?>
             </table>
@@ -134,12 +154,27 @@
                   <textarea rows="4" cols="100" name="content"><?php echo $question['content']; ?></textarea>
                   <input type="hidden" name="id" value="<?php echo $id ?>">
                   <br><br>
-                  <button type="submit" name="uq" class="btn btn-success">Update</button>&nbsp;&nbsp;
-                  <a href="<?php echo $_SERVER['PHP_SELF'] ?>"><button class="btn btn-danger">Cancel</button></a>
+                  <button style="float:left;margin-right:15px;" type="submit" name="uq" class="btn btn-success">Update</button>
                 </form>
+                <a href="<?php echo $_SERVER['PHP_SELF'] ?>"><button class="btn btn-danger">Cancel</button></a>
+            <?php } ?>
+            <?php if($up) {?>
+              <?php
+                $id = $_POST['id'];
+                $query = "SELECT * FROM players WHERE id = {$id}";
+                $result = mysqli_query($connection, $query);
+                $question = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                mysqli_free_result($result);
+              ?>
+                <form method="post" action="<?php echo $_SERVER['PHP_SELF'] . '?up=1' ?>">
+                  <textarea rows="4" cols="100" name="content"><?php echo $question['content']; ?></textarea>
+                  <input type="hidden" name="id" value="<?php echo $id ?>">
+                  <br><br>
+                  <button style="float:left;margin-right:15px;" type="submit" name="up" class="btn btn-success">Update</button>
+                </form>
+                <a href="<?php echo $_SERVER['PHP_SELF'] . '?player=1' ?>"><button class="btn btn-danger">Cancel</button></a>
             <?php } ?>
           </div>
-
         </div>
       </div>
     </div>
