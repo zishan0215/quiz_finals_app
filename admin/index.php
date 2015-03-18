@@ -1,5 +1,10 @@
+<?php require_once '../includes/connection.php' ?>
 <?php
   $ques=0;
+  $uq = 0;
+  if(isset($_GET['update_question'])) {
+    $uq = 1;
+  }
 ?>
 
 <!DOCTYPE html>
@@ -56,13 +61,19 @@
 
 
           <h2 class="sub-header">
-            <?php if($ques) echo "Questions";
-                  else echo "Players";
+            <?php if($ques && !$uq) echo "Questions";
+                  elseif(!$ques) echo "Players";
+                  elseif($uq) echo 'Update Question';
             ?>
           </h2>
           <div class="table-responsive">
             <table class="table table-striped">
-              <?php if($ques) { ?>
+              <?php if($ques && !$uq) { ?>
+                <?php
+                  $query = "SELECT * FROM questions";
+                  $result = mysqli_query($connection, $query);
+                  $num =  mysqli_num_rows($result);
+                ?>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -70,12 +81,19 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Lorem</td>
-                  </tr>
+                  <?php for($i=1; $i<=$num; $i++) { ?>
+                    <form action="<?php echo $_SERVER['PHP_SELF']. '?update_question=1' ?>" method="post">
+                      <tr>
+                        <?php $q = mysqli_fetch_array($result, MYSQLI_ASSOC); ?>
+                        <td><?php echo $q["id"] ?></td>
+                        <td><?php echo $q["content"] ?></td>
+                        <input type="hidden" name="id" value="<?php echo $q['id'] ?>">
+                        <td><button type="submit" class="btn btn-success">EDIT</button></td>
+                      </tr>
+                    </form>
+                  <?php } mysqli_free_result($result); ?>
                 </tbody>
-              <?php } else { ?>
+              <?php } elseif(!$ques && !$uq) { ?>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -90,15 +108,25 @@
                 </tbody>
               <?php } ?>
             </table>
+            <?php if($uq) { ?>
+              <?php
+                $id = $_POST['id'];
+                $query = "SELECT * FROM questions WHERE id = {$id}";
+                $result = mysqli_query($connection, $query);
+                $question = mysqli_fetch_array($result, MYSQLI_ASSOC);
+              ?>
+                <form>
+                  <textarea rows="4" cols="100"><?php echo $question['content']; ?></textarea>
+                  <br><br>
+                  <button type="submit" name="uq" class="btn btn-success">Update</button>&nbsp;&nbsp;
+                  <a href="<?php echo $_SERVER['PHP_SELF'] ?>"><button class="btn btn-danger">Cancel</button></a>
+                </form>
+            <?php } ?>
           </div>
 
         </div>
       </div>
     </div>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   </body>
 </html>
